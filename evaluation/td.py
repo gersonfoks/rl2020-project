@@ -75,8 +75,8 @@ def n_step_td(env, behavior_policy, alpha, num_episodes, sampling_function, n=1,
     return V
 
 
-def n_step_td_importance_sampling(env, behavior_policy, target_policy, num_episodes, sampling_function, n=1,
-                                  discount_factor=1.0):
+def n_step_sarse_off_policy(env, behavior_policy, target_policy, num_episodes, sampling_function, n=1,
+                            discount_factor=1.0):
     V = defaultdict(float)
     returns_count = defaultdict(float)
     alpha = 0.01
