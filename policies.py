@@ -82,3 +82,22 @@ class SimpleBlackjackPolicy(Policy):
 
         action = np.random.choice(actions, p=probs)
         return action
+
+class EpsilonGreedyPolicy(object):
+    def __init__(self, actions):
+        self.actions = actions
+
+    def get_probs(self, states, actions, Q):
+        epsilon = 0.10
+        probs = np.full(len(states), epsilon/len(actions))
+        index = np.random.choice(np.flatnonzero(Q == Q.max()))
+        probs[index] += 1-epsilon
+        return probs
+
+
+    def sample_action(self, state, Q):
+        probs = self.get_probs([state for i in range(len(self.actions))], self.actions, Q[state])
+
+        action = np.random.choice(self.actions, p=probs)
+        return action
+    
