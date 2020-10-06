@@ -55,16 +55,13 @@ for state, action in action_map.items():
 print(Q)
 
 actions = [0,1,2,3]
-policy = FrozenLakeSmallPolicy(actions, Q, 0.00001)
+target_policy = FrozenLakeSmallPolicy(actions, Q, 0.000001)
+behavior_policy = RandomPolicy(actions)
 
 ### First we run the env with random agent
 
-observation = env.reset()
-for _ in range(1000):
-  env.render()
-  action = policy.sample_action(observation) # your agent here (this takes random actions)
-  print(action)
-  observation, reward, done, info = env.step(action)
-  if done:
-    break
-env.close()
+np.random.seed(42)
+#V_10k = mc_weighted_importance_sampling(env,behavior_policy , target_policy, 10000, sample_episode)
+V_500k = mc_weighted_importance_sampling(env, behavior_policy, target_policy, 500000, sample_episode)
+
+print(V_500k)

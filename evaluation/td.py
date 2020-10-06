@@ -75,7 +75,7 @@ def n_step_td(env, behavior_policy, alpha, num_episodes, sampling_function, n=1,
     return V
 
 
-def n_step_sarse_off_policy(env, behavior_policy, target_policy, num_episodes, sampling_function, n=1,
+def n_step_sarsa_off_policy(env, behavior_policy, target_policy, num_episodes, sampling_function, n=1,
                             discount_factor=1.0):
     V = defaultdict(float)
     returns_count = defaultdict(float)
@@ -109,7 +109,7 @@ def n_step_sarse_off_policy(env, behavior_policy, target_policy, num_episodes, s
                 ro = np.product(
                     [target_policy.get_probs([state], [action])[0] / behavior_policy.get_probs([state], [action])[0] for
                      state, action, reward in
-                     zip(states[tau: tau_upto], actions[tau: tau_upto], rewards[tau: tau_upto])])
+                     zip(states[tau: tau_upto-1], actions[tau: tau_upto-1], rewards[tau: tau_upto-1])])
 
                 G = np.sum([discount_factor ** i * rewards[i] for i in range(tau, min(tau + n, T))])
                 if tau + n < T:
@@ -162,15 +162,15 @@ def n_step_td_importance_sampling_test(env, behavior_policy, target_policy, num_
                 ro_prods = np.cumprod(ro_s)
                 G = np.sum([ro_prods[i - tau] * discount_factor ** i * rewards[i] for i in range(tau, tau_upto)])
 
-                mean = np.mean(ro_prods)
+                mean = np.sum(ro_prods)
 
-                G = G / mean
+
 
                 if tau + n < T:
                     G = G + ro_prods[-1] * discount_factor ** n * V[states[tau + n]]
-
+                G = G
                 if mean != 0:
-                    V[states[tau]] = V[states[tau]] + alpha * (G - V[states[tau]])
+                    V[states[tau]] = V[states[tau]] + alpha * (1/mean) * (G - V[states[tau]])
 
             current_state = next_state
             tau = t - n + 1
