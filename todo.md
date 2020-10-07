@@ -2,9 +2,9 @@
 TODO:
 
 1) Make the following env work:
-    1) Blackjack
+    1) Blackjack (Done)
     2) FrozenLake
-        1) 4x4
+        1) 4x4 (Done)
         2) 8x8
     3) NChain
    
@@ -17,8 +17,7 @@ TODO:
     2) Ordinary
     
 4) Make easy test environment
-    1) A overall conf file
-    2) ...
+
     
 4) Off policy Control (if time permits?)
 
