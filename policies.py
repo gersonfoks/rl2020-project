@@ -83,21 +83,51 @@ class SimpleBlackjackPolicy(Policy):
         action = np.random.choice(actions, p=probs)
         return action
 
-class EpsilonGreedyPolicy(object):
+class EpsilonGreedyPolicyNChain(object):
     def __init__(self, actions):
         self.actions = actions
 
-    def get_probs(self, states, actions, Q):
+    def get_probs(self, states, actions, V):
         epsilon = 0.10
         probs = np.full(len(states), epsilon/len(actions))
-        index = np.random.choice(np.flatnonzero(Q == Q.max()))
-        probs[index] += 1-epsilon
+
+        if states[0] == 0:
+            probs[1] = 1
+            probs[0] = 0
+        else: 
+            temp_states = [V[states[0]-1], V[states[0]+1] ]
+            index = np.random.choice(np.flatnonzero(temp_states == max(temp_states))) - 1 + states[0]
+            probs[index] += 1-epsilon
         return probs
 
 
-    def sample_action(self, state, Q):
-        probs = self.get_probs([state for i in range(len(self.actions))], self.actions, Q[state])
+    def sample_action(self, state, V):
+        probs = self.get_probs([state for i in range(len(self.actions))], self.actions, V)
 
         action = np.random.choice(self.actions, p=probs)
         return action
+
+# class EpsilonGreedyPolicyNChain(object):
+#     def __init__(self, actions):
+#         self.actions = actions
+
+#     def get_probs(self, states, actions, V):
+#         epsilon = 0.10
+#         probs = np.full(len(states), epsilon/len(actions))
+
+#         if states[0] == 0:
+#             probs[1] = 1
+#             probs[0] = 0
+#         else: 
+#             temp_states = [V[states[0]-1] V[states[0]+1]]
+#             index = np.random.choice(np.flatnonzero(temp_states == temp_states.max())) - 1 + states[0]
+#             probs[index] += 1-epsilon
+#         return probs
+
+
+#     def sample_action(self, state, V):
+#         probs = self.get_probs([state for i in range(len(self.actions))], self.actions, V)
+
+#         action = np.random.choice(self.actions, p=probs)
+#         return action
     
