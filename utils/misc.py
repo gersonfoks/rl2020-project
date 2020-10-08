@@ -62,3 +62,26 @@ def get_predicted_values(V, player_values, dealer_values, usable_ace):
         for dealer_value in dealer_values:
             predicted_values[dealer_value - 1, player_value - 12] = V[(player_value, dealer_value, usable_ace)]
     return predicted_values
+
+def sample_episode_lim(env, policy,limit=100):
+ 
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+
+    state = env.reset()
+
+    for i in range(limit):
+        states.append(state)
+
+        action = policy.sample_action(state)
+        state, reward, done, _ = env.step(action)
+
+        actions.append(action)
+        rewards.append(reward)
+        dones.append(done)
+        if done == True:
+            break
+
+    return states, actions, rewards, dones
