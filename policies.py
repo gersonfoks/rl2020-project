@@ -90,11 +90,12 @@ class EpsilonGreedyPolicy(object):
         self.epsilon = epsilon
 
     def get_probs(self, states, actions):
-        probs = np.full(len(states), self.epsilon/len(actions))    
-        index = np.random.choice(np.flatnonzero(self.Q[states[0]] == self.Q[states[0]].max()))
-        probs[index] += 1-self.epsilon
-        return probs
+        probs = np.full(len(states), self.epsilon / len(self.actions))
+        for i, (state, action) in enumerate(zip(states, actions)):
+            if np.argmax(self.Q[state]) == action:
+                probs[i] += 1 - self.epsilon
 
+        return probs
 
     def sample_action(self, state):
         probs = self.get_probs([state for i in range(len(self.actions))], self.actions)
