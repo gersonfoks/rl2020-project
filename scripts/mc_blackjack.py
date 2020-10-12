@@ -7,37 +7,27 @@ import gym
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-
 ###
 player_values = [i for i in range(12, 22)]
-dealer_values = [i for i in range(1,11)]
-
+dealer_values = [i for i in range(1, 11)]
 
 env = gym.make('Blackjack-v0')
-
 
 # Let's sample some episodes
 
 policy = SimpleBlackjackPolicy()
 for episode in range(3):
     trajectory_data = sample_episode(env, policy)
-    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode, *trajectory_data))
 
-
-actions = [0,1]
+actions = [0, 1]
 blackjack_policy = RandomPolicy(actions)
 
 np.random.seed(42)
-_, hist = mc_prediction(env, blackjack_policy,10000, sample_episode, save_every=1000, name="mc_blackjack")
+_, hist = mc_prediction(env, SimpleBlackjackPolicy(), 500001, sample_episode, save_every=1000, name="mc_blackjack")
 
-
-hist_2 = load_v_history("mc_blackjack")
-
-
-V_10k = defaultdict(float, hist_2[1000])
-V_500k = defaultdict(float, hist_2[2000])
-
-
+V_10k = defaultdict(float, hist[1000])
+V_500k = defaultdict(float, hist[500000])
 
 usable_aces_values = [True, False]
 Vs = [V_10k, V_500k]

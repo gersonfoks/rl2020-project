@@ -2,6 +2,8 @@ from collections import defaultdict
 from tqdm import tqdm
 import numpy as np
 
+from utils.misc import save_v_history
+
 
 def n_step_td(env, behavior_policy, alpha, num_episodes, sampling_function, n=1,
               discount_factor=1.0):
@@ -46,9 +48,9 @@ def n_step_td(env, behavior_policy, alpha, num_episodes, sampling_function, n=1,
 
 
 def n_step_td_off_policy(env, behavior_policy, target_policy, num_episodes, sampling_function, n=1,
-                            discount_factor=1.0, alpha=0.001):
+                            discount_factor=1.0, alpha=0.001, save_every=-1, name="td_off_policy"):
     V = defaultdict(float)
-
+    V_hist = {}
     for i in tqdm(range(num_episodes)):
         current_state = env.reset()
 
@@ -78,7 +80,7 @@ def n_step_td_off_policy(env, behavior_policy, target_policy, num_episodes, samp
                      state, action, reward in
                      zip(states[tau: tau_upto], actions[tau: tau_upto], rewards[tau: tau_upto])])
 
-                G = np.sum([discount_factor ** i * rewards[i] for i in range(tau, min(tau + n, T))])
+                G = np.sum([discount_factor ** (i - tau) * rewards[i] for i in range(tau, min(tau + n, T))])
                 if tau + n < T:
                     G = G + discount_factor ** n * V[states[tau + n]]
 
@@ -88,6 +90,11 @@ def n_step_td_off_policy(env, behavior_policy, target_policy, num_episodes, samp
             tau = t - n + 1
             t += 1
 
-    return V
+        if save_every > 0:
+            if i % save_every == 0:
+                V_hist[i] = dict(V.copy())
+                save_v_history(V_hist, name)
+
+    return V, V_hist
 
 

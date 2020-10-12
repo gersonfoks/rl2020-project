@@ -41,7 +41,7 @@ def mc_prediction(env, policy, num_episodes, sampling_function, discount_factor=
 
 
 def mc_ordinary_importance_sampling(env, behavior_policy, target_policy, num_episodes, sampling_function,
-                                    discount_factor=1.0):
+                                    discount_factor=1.0, save_every=-1, name="mc_ordinary"):
     """
     Monte Carlo prediction algorithm. Calculates the value function
     for a given target policy using behavior policy and ordinary importance sampling.
@@ -63,7 +63,7 @@ def mc_ordinary_importance_sampling(env, behavior_policy, target_policy, num_epi
     # to calculate an update.
     V = defaultdict(float)
     returns_count = defaultdict(float)
-
+    V_hist = {}
     # YOUR CODE HERE
     for i in tqdm(range(num_episodes)):
         G = 0
@@ -84,12 +84,17 @@ def mc_ordinary_importance_sampling(env, behavior_policy, target_policy, num_epi
 
             # Update formula
             V[state] = V[state] + (W * G - V[state]) / returns_count[state]
+        if save_every > 0:
+            if i % save_every == 0:
+                V_hist[i] = dict(V.copy())
+                save_v_history(V_hist, name)
 
-    return V
+
+    return V, V_hist
 
 
 def mc_weighted_importance_sampling(env, behavior_policy, target_policy, num_episodes, sampling_function,
-                                    discount_factor=1.0):
+                                    discount_factor=1.0, save_every=-1, name="mc_weighted"):
     """
     Monte Carlo prediction algorithm. Calculates the value function
     for a given target policy using behavior policy and weighted importance sampling.
@@ -112,7 +117,7 @@ def mc_weighted_importance_sampling(env, behavior_policy, target_policy, num_epi
     V = defaultdict(float)
 
     C = defaultdict(float)
-
+    V_hist = {}
     returns_count = defaultdict(float)
 
     # YOUR CODE HERE
@@ -138,5 +143,8 @@ def mc_weighted_importance_sampling(env, behavior_policy, target_policy, num_epi
 
             if W == 0:
                 break
-
-    return V
+        if save_every > 0:
+            if i % save_every == 0:
+                V_hist[i] = dict(V.copy())
+                save_v_history(V_hist, name)
+    return V, V_hist

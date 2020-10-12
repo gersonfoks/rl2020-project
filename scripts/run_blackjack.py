@@ -27,12 +27,14 @@ actions = [0,1]
 blackjack_policy = RandomPolicy(actions)
 
 np.random.seed(42)
-V_10k = mc_ordinary_importance_sampling(env, blackjack_policy, SimpleBlackjackPolicy(), 10000, sample_episode)
-V_500k = mc_ordinary_importance_sampling(env, blackjack_policy, SimpleBlackjackPolicy(), 500000, sample_episode)
 
+last, hist = mc_ordinary_importance_sampling(env, blackjack_policy, SimpleBlackjackPolicy(), 250001, sample_episode, save_every=1000)
+
+V_10k = hist[10000]
+V_250k = hist[250000]
 
 usable_aces_values = [True, False]
-Vs = [V_10k, V_500k]
+Vs = [V_10k, V_250k]
 X, Y = np.meshgrid(player_values, dealer_values)
 fig = plt.figure(figsize=(20, 10))
 c = 0

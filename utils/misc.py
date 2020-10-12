@@ -1,6 +1,7 @@
 import numpy as np
 from ast import literal_eval
 
+
 def sample_episode(env, policy):
     """
     A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
@@ -64,7 +65,7 @@ def save_v_history(V_hist, name):
 def load_v_history(name):
     with open("{}.txt".format(name), "r") as file:
         v_history = literal_eval(file.read())
-    
+
     return v_history
 
 
@@ -75,8 +76,8 @@ def get_predicted_values(V, player_values, dealer_values, usable_ace):
             predicted_values[dealer_value - 1, player_value - 12] = V[(player_value, dealer_value, usable_ace)]
     return predicted_values
 
-def sample_episode_lim(env, policy,limit=100):
- 
+
+def sample_episode_lim(env, policy, limit=100):
     states = []
     actions = []
     rewards = []

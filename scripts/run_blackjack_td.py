@@ -23,12 +23,14 @@ actions = [0,1]
 blackjack_policy = RandomPolicy(actions)
 
 np.random.seed(42)
-V_10k = n_step_td_off_policy(env, blackjack_policy, SimpleBlackjackPolicy(), 10000, sample_step, n=5)
-V_500k = n_step_td_off_policy(env, blackjack_policy, SimpleBlackjackPolicy(), 500000, sample_step, n=5)
 
+_, V_hist = n_step_td_off_policy(env, blackjack_policy, SimpleBlackjackPolicy(), 500001, sample_step, n=5, save_every=1000)
+
+V_10k = V_hist[10000]
+V_20k = V_hist[500000]
 
 usable_aces_values = [True, False]
-Vs = [V_10k, V_500k]
+Vs = [V_10k, V_20k]
 X, Y = np.meshgrid(player_values, dealer_values)
 fig = plt.figure(figsize=(20, 10))
 c = 0
