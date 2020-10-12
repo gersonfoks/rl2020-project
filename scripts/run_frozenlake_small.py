@@ -1,12 +1,7 @@
-import numpy as np
-
-from evaluation.mc import *
 from frozen_lake_policies import FrozenLakeSmallPolicy
 from utils.misc import *
 from policies import *
 import gym
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 
 ## We will use a non slippery variant First.
@@ -62,6 +57,6 @@ behavior_policy = RandomPolicy(actions)
 
 np.random.seed(42)
 #V_10k = mc_weighted_importance_sampling(env,behavior_policy , target_policy, 10000, sample_episode)
-V_500k = mc_weighted_importance_sampling(env, behavior_policy, target_policy, 500000, sample_episode)
+V_500k = n_step_sarsa_off_policy(env, behavior_policy, target_policy, 100000, sample_step, n=3)
 
 print(V_500k)

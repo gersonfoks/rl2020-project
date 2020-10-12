@@ -1,6 +1,43 @@
 from collections import defaultdict
 from tqdm import tqdm
 
+from utils.misc import save_v_history
+
+
+def mc_prediction(env, policy, num_episodes, sampling_function, discount_factor=1.0, save_every=-1, name="mc"):
+    """
+    Monte Carlo prediction algorithm. Calculates the value function
+    for a given policy using sampling.
+
+    """
+
+    # Keeps track of current V and count of returns for each state
+    # to calculate an update.
+    V = defaultdict(float)
+    V_hist = {}
+    returns_count = defaultdict(float)
+    # YOUR CODE HERE
+    for i in tqdm(range(num_episodes)):
+        G = 0
+
+        states, actions, rewards, dones = sampling_function(env, policy)
+
+        T = len(states)
+        for t in range(T - 1, -1, -1):
+            reward = rewards[t]
+            G = discount_factor * G + reward
+            state = states[t]
+
+            returns_count[state] += 1
+            V[state] = V[state] + (G - V[state]) / returns_count[state]
+
+        if save_every > 0:
+            if i % save_every == 0:
+                V_hist[i] = dict(V.copy())
+                save_v_history(V_hist, name)
+
+
+    return V, V_hist
 
 
 def mc_ordinary_importance_sampling(env, behavior_policy, target_policy, num_episodes, sampling_function,

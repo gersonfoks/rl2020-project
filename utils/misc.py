@@ -1,5 +1,5 @@
 import numpy as np
-
+from ast import literal_eval
 
 def sample_episode(env, policy):
     """
@@ -54,6 +54,18 @@ def sample_step(env, policy, current_state):
     next_state, reward, done, _ = env.step(action)
 
     return current_state, action, next_state, reward, done
+
+
+def save_v_history(V_hist, name):
+    with open("{}.txt".format(name), 'w') as outfile:
+        outfile.write(str(V_hist))
+
+
+def load_v_history(name):
+    with open("{}.txt".format(name), "r") as file:
+        v_history = literal_eval(file.read())
+    
+    return v_history
 
 
 def get_predicted_values(V, player_values, dealer_values, usable_ace):
