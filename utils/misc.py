@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import numpy as np
 from ast import literal_eval
 
@@ -58,14 +60,18 @@ def sample_step(env, policy, current_state):
 
 
 def save_v_history(V_hist, name):
+    v_history = {key: dict(value) for key, value in V_hist.items()}
     with open("{}.txt".format(name), 'w') as outfile:
-        outfile.write(str(V_hist))
+        outfile.write(str(v_history))
 
 
 def load_v_history(name):
     with open("{}.txt".format(name), "r") as file:
         v_history = literal_eval(file.read())
 
+
+    ## Transform back to default dict
+    v_history = {key: defaultdict(float, value) for key, value in v_history.items()}
     return v_history
 
 
@@ -98,3 +104,10 @@ def sample_episode_lim(env, policy, limit=100):
             break
 
     return states, actions, rewards, dones
+
+
+def get_oldest_history(histories):
+
+    max_iter = np.max([key for key in histories.keys()])
+
+    return histories[max_iter]

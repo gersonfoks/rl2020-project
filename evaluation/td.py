@@ -6,11 +6,11 @@ from utils.misc import save_v_history
 
 
 def n_step_td(env, behavior_policy, alpha, num_episodes, sampling_function, n=1,
-              discount_factor=1.0):
+              discount_factor=1.0, ):
     V = defaultdict(float)
 
     # YOUR CODE HERE
-    for i in tqdm(range(num_episodes)):
+    for i in tqdm(range(1, num_episodes+1)):
         current_state = env.reset()
 
         T = np.inf
@@ -51,7 +51,7 @@ def n_step_td_off_policy(env, behavior_policy, target_policy, num_episodes, samp
                             discount_factor=1.0, alpha=0.001, save_every=-1, name="td_off_policy"):
     V = defaultdict(float)
     V_hist = {}
-    for i in tqdm(range(num_episodes)):
+    for i in tqdm(range(1, num_episodes+1)):
         current_state = env.reset()
 
         T = np.inf
@@ -92,9 +92,8 @@ def n_step_td_off_policy(env, behavior_policy, target_policy, num_episodes, samp
 
         if save_every > 0:
             if i % save_every == 0:
-                V_hist[i] = dict(V.copy())
+                V_hist[i] = V.copy()
                 save_v_history(V_hist, name)
 
     return V, V_hist
-
 

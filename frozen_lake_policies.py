@@ -9,8 +9,6 @@ class FrozenLakeSmallPolicy(Policy):
         self.epsilon = epsilon
 
     def get_probs(self, states, actions):
-
-
         probs = np.full(len(states), self.epsilon / len(self.actions))
         for i, (state, action) in enumerate(zip(states, actions)):
             if np.argmax(self.Q[state]) == action:

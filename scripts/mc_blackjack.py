@@ -16,9 +16,6 @@ env = gym.make('Blackjack-v0')
 # Let's sample some episodes
 
 policy = SimpleBlackjackPolicy()
-for episode in range(3):
-    trajectory_data = sample_episode(env, policy)
-    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode, *trajectory_data))
 
 actions = [0, 1]
 blackjack_policy = RandomPolicy(actions)

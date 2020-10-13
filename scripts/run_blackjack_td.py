@@ -24,7 +24,7 @@ blackjack_policy = RandomPolicy(actions)
 
 np.random.seed(42)
 
-_, V_hist = n_step_td_off_policy(env, blackjack_policy, SimpleBlackjackPolicy(), 500001, sample_step, n=5, save_every=1000)
+_, V_hist = n_step_td_off_policy(env, blackjack_policy, SimpleBlackjackPolicy(), 500000, sample_step, n=5, save_every=1000)
 
 V_10k = V_hist[10000]
 V_20k = V_hist[500000]

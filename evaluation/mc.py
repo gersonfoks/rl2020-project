@@ -17,7 +17,7 @@ def mc_prediction(env, policy, num_episodes, sampling_function, discount_factor=
     V_hist = {}
     returns_count = defaultdict(float)
     # YOUR CODE HERE
-    for i in tqdm(range(num_episodes)):
+    for i in tqdm(range(1, num_episodes+1)):
         G = 0
 
         states, actions, rewards, dones = sampling_function(env, policy)
@@ -33,7 +33,7 @@ def mc_prediction(env, policy, num_episodes, sampling_function, discount_factor=
 
         if save_every > 0:
             if i % save_every == 0:
-                V_hist[i] = dict(V.copy())
+                V_hist[i] = V.copy()
                 save_v_history(V_hist, name)
 
 
@@ -65,7 +65,7 @@ def mc_ordinary_importance_sampling(env, behavior_policy, target_policy, num_epi
     returns_count = defaultdict(float)
     V_hist = {}
     # YOUR CODE HERE
-    for i in tqdm(range(num_episodes)):
+    for i in tqdm(range(1, num_episodes+1)):
         G = 0
 
         states, actions, rewards, dones = sampling_function(env, behavior_policy)
@@ -86,7 +86,7 @@ def mc_ordinary_importance_sampling(env, behavior_policy, target_policy, num_epi
             V[state] = V[state] + (W * G - V[state]) / returns_count[state]
         if save_every > 0:
             if i % save_every == 0:
-                V_hist[i] = dict(V.copy())
+                V_hist[i] = V.copy()
                 save_v_history(V_hist, name)
 
 
@@ -121,7 +121,7 @@ def mc_weighted_importance_sampling(env, behavior_policy, target_policy, num_epi
     returns_count = defaultdict(float)
 
     # YOUR CODE HERE
-    for i in tqdm(range(num_episodes)):
+    for i in tqdm(range(1, num_episodes+1)):
         G = 0
 
         states, actions, rewards, dones = sampling_function(env, behavior_policy)
@@ -145,6 +145,6 @@ def mc_weighted_importance_sampling(env, behavior_policy, target_policy, num_epi
                 break
         if save_every > 0:
             if i % save_every == 0:
-                V_hist[i] = dict(V.copy())
+                V_hist[i] = V.copy()
                 save_v_history(V_hist, name)
     return V, V_hist
