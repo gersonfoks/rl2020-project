@@ -18,6 +18,7 @@ class NChainEnv(gym.Env):
     """
     def __init__(self, n=5, slip=0.2, small=2, large=10):
         self.n = n
+        print(self.n)
         self.slip = slip  # probability of 'slipping' an action
         self.small = small  # payout for 'backwards' action
         self.large = large  # payout at end of chain for 'forwards' action
@@ -32,15 +33,17 @@ class NChainEnv(gym.Env):
 
     def step(self, action):
         assert self.action_space.contains(action)
-        
+        done = False
+
         if self.np_random.rand() < self.slip:
             action = not action  # agent slipped, reverse action taken
             
             
         #added 
+        print(self.n)
         if self.state == 0 and action:
             done = True
-        elif self.state == n-1 and not action:
+        elif (self.state == self.n - 1) and not action:
             done = True
         else:
             done = False
