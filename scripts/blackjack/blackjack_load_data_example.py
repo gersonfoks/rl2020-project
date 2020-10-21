@@ -14,7 +14,7 @@ weighted_histories= [load_v_history(name) for name in weighted_histories_names]
 td_histories = [load_v_history(name) for name in td_histories_names]
 
 baseline_history = load_v_history('mc_blackjack')
-print(baseline_history)
+
 
 baseline = get_oldest_history(baseline_history)
 

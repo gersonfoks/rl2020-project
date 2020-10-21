@@ -51,7 +51,7 @@ for state, action in action_map.items():
 print(Q)
 
 actions = [0,1,2,3]
-target_policy = FrozenLakeSmallPolicy(actions, Q, 0.000001)
+target_policy = EpsilonGreedyPolicy(actions, Q, 0.000001)
 behavior_policy = RandomPolicy(actions)
 
 ### First we run the env with random agent

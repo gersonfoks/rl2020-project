@@ -83,7 +83,8 @@ class SimpleBlackjackPolicy(Policy):
         action = np.random.choice(actions, p=probs)
         return action
 
-class EpsilonGreedyPolicy(object):
+
+class EpsilonGreedyPolicy(Policy):
     def __init__(self, actions, Q, epsilon):
         self.actions = actions
         self.Q = Q
@@ -103,4 +104,44 @@ class EpsilonGreedyPolicy(object):
         return action
 
 
-    
+### Creator functions
+
+def create_epsilon_greedy_nchain_policy(n, epsilon):
+    actions = [0, 1]
+    Q = np.zeros((n, 2))
+
+    for state in range(n):
+        Q[state, 0] = 1
+    policy = EpsilonGreedyPolicy(actions, Q, 0.001)
+    return policy
+
+
+def create_epsilon_greey_frozenlake_policy(epsilon):
+    action_map = {
+        0: "D",
+        1: "R",
+        2: "D",
+        3: "L",
+        4: "D",
+        5: "U",
+        6: "D",
+        7: "U",
+        8: "R",
+        9: "D",
+        10: "D",
+        11: "U",
+        12: "U",
+        13: "R",
+        14: "R",
+        15: "D",
+
+    }
+    index = {"L": 0, "D": 1, "R": 2, "U": 3}
+
+    Q = np.zeros((16, 4))
+
+    for state, action in action_map.items():
+        Q[state, index[action]] = 1
+    actions = [0,1,2,3]
+    policy = EpsilonGreedyPolicy(actions, Q, 0.000001)
+    return policy

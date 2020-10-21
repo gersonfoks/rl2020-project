@@ -2,47 +2,67 @@
 This file contains the blackjack experiments.
 """
 import gym
-import numpy as np
+from environments.Nchain import NChainEnv
 from evaluation.mc import *
 from evaluation.td import n_step_td_off_policy
 from utils.experiments import *
 from utils.misc import sample_episode, sample_step
-from policies import SimpleBlackjackPolicy, RandomPolicy
+from policies import *
 import matplotlib.pyplot as plt
+
+
+from gym.envs.registration import register
+register(
+    id='FrozenLakeNotSlippery-v0',
+    entry_point='gym.envs.toy_text:FrozenLakeEnv',
+    kwargs={'map_name' : '4x4', 'is_slippery': False},
+    max_episode_steps=100,
+    reward_threshold=0.78, # optimum = .8196
+)
+
+
 
 # Default variables
 
 alphas = [0.1, 0.01, 0.001]
 
-actions = [0, 1]
-env = gym.make('Blackjack-v0')
+actions = [0, 1,2,3]
+
+env = gym.make('FrozenLakeNotSlippery-v0')
 
 # Global settings
 
-target_policy = SimpleBlackjackPolicy()
+
+epsilon = 0.01
+
+target_policy = create_epsilon_greey_frozenlake_policy(epsilon)
 behavior_policy = RandomPolicy(actions)
 
-n_experiments = 2
+n_experiments = 10
 
-save_every = 1e4  ### How often we should save the results
+save_every = 1e2  ### How often we should save the results
 
 # Conf for mc
-n_mc_run = int(1e5)
+n_mc_run = int(1e4)
 save_every_mc = n_mc_run
 
 # Conf for the mc off policy
 
-n_mc_off_policy = int(1e5)
+n_mc_off_policy = int(1e4)
+
+### Here we create the names
+name = "frozenlake_small"
+
 
 # First we need to run mc.
-v_mc, hist = mc_prediction(env, SimpleBlackjackPolicy(), n_mc_run, sample_episode, save_every=n_mc_run, name="mc_blackjack")
+v_mc, hist = mc_prediction(env, target_policy, n_mc_run, sample_episode, save_every=n_mc_run, name="mc_{}".format(name))
 
 histories_ord = run_experiments(mc_ordinary_importance_sampling, env, behavior_policy, target_policy, n_mc_off_policy,
-                                sample_episode, n_experiments, save_every, name="mc_ord_blackjack")
+                                sample_episode, n_experiments, save_every, name="mc_ord_".format(name))
 
 histories_weighted = run_experiments(mc_weighted_importance_sampling, env, behavior_policy, target_policy,
                                      n_mc_off_policy, sample_episode, n_experiments, save_every,
-                                     name="mc_weighted_blackjack")
+                                     name="mc_weighted_".format(name))
 
 
 alpha_histories = [
@@ -50,7 +70,7 @@ alpha_histories = [
 ]
 for alpha in alphas:
     alpha_histories.append(run_experiments(n_step_td_off_policy, env, behavior_policy, target_policy, n_mc_off_policy, sample_step,
-                               n_experiments, save_every, name="td_blackjack_{}".format(alpha), alpha=alpha))
+                               n_experiments, save_every, name="td_{}_{}".format(name, alpha), alpha=alpha))
 
 # Next we plot the results.
 
@@ -59,6 +79,13 @@ list_of_histories = [
     histories_weighted,
 
 ] + alpha_histories
+
+
+names = [
+    "mc ordinary ",
+    "mc weighted",
+
+] + ["TD, alpha: {}".format(alpha) for alpha in alphas ]
 
 for histories in list_of_histories:
     rmses = evaluate_experiment(histories, v_mc)
@@ -74,4 +101,6 @@ for histories in list_of_histories:
     plt.plot(run_lengths[0], mean)
     plt.fill_between(run_lengths[0], mean + std, mean - std, alpha=0.5)
 
+
+plt.legend(names)
 plt.show()
