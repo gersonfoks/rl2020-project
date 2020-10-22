@@ -24,8 +24,8 @@ register(
 
 # Default variables
 
-alphas = [0.1, 0.01, 0.001]
-
+alphas = [0.01]
+td_n = 4
 actions = [0, 1,2,3]
 
 env = gym.make('FrozenLakeNotSlippery-v0')
@@ -70,7 +70,7 @@ alpha_histories = [
 ]
 for alpha in alphas:
     alpha_histories.append(run_experiments(n_step_td_off_policy, env, behavior_policy, target_policy, n_mc_off_policy, sample_step,
-                               n_experiments, save_every, name="td_{}_{}".format(name, alpha), alpha=alpha))
+                               n_experiments, save_every, name="td_{}_{}".format(name, alpha), alpha=alpha, n=td_n))
 
 # Next we plot the results.
 
@@ -85,7 +85,7 @@ names = [
     "mc ordinary ",
     "mc weighted",
 
-] + ["TD, alpha: {}".format(alpha) for alpha in alphas ]
+] + ["TD({}), alpha: {}".format(td_n, alpha) for alpha in alphas ]
 
 for histories in list_of_histories:
     rmses = evaluate_experiment(histories, v_mc)
