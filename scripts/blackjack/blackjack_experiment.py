@@ -25,15 +25,15 @@ behavior_policy = RandomPolicy(actions)
 
 n_experiments = 10
 
-save_every = 5e3  ### How often we should save the results
+save_every = 1e3  ### How often we should save the results
 
 # Conf for mc
-n_mc_run = int(5e1)
+n_mc_run = int(5e5)
 save_every_mc = n_mc_run
 
 # Conf for the mc off policy
 
-n_mc_off_policy = int(1e6)
+n_mc_off_policy = int(5e5)
 
 # First we need to run mc.
 v_mc, hist = mc_prediction(env, SimpleBlackjackPolicy(), n_mc_run, sample_episode, save_every=n_mc_run, name="mc_blackjack")
