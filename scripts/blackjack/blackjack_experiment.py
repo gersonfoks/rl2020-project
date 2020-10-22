@@ -81,6 +81,8 @@ for histories in list_of_histories:
     plt.plot(run_lengths[0], mean)
     plt.fill_between(run_lengths[0], mean + std, mean - std, alpha=0.5)
 
-
+plt.title("Blackjack")
+plt.xlabel("Number of Episodes")
+plt.ylabel("RMSE")
 plt.legend(names)
 plt.show()
