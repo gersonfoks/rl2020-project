@@ -11,7 +11,7 @@ from policies import SimpleBlackjackPolicy, RandomPolicy
 import matplotlib.pyplot as plt
 
 # Default variables
-
+name = "blackjack"
 alphas = [0.01]
 td_n = 4
 
@@ -36,14 +36,14 @@ save_every_mc = n_mc_run
 n_mc_off_policy = int(5e5)
 
 # First we need to run mc.
-v_mc, hist = mc_prediction(env, SimpleBlackjackPolicy(), n_mc_run, sample_episode, save_every=n_mc_run, name="mc_blackjack")
+v_mc, hist = mc_prediction(env, SimpleBlackjackPolicy(), n_mc_run, sample_episode, save_every=n_mc_run, name="mc_{}".format(name))
 
 histories_ord = run_experiments(mc_ordinary_importance_sampling, env, behavior_policy, target_policy, n_mc_off_policy,
-                                sample_episode, n_experiments, save_every, name="mc_ord_blackjack")
+                                sample_episode, n_experiments, save_every, name="mc_ord_{}".format(name))
 
 histories_weighted = run_experiments(mc_weighted_importance_sampling, env, behavior_policy, target_policy,
                                      n_mc_off_policy, sample_episode, n_experiments, save_every,
-                                     name="mc_weighted_blackjack")
+                                     name="mc_weighted_{}".format(name))
 
 
 alpha_histories = [
@@ -51,7 +51,7 @@ alpha_histories = [
 ]
 for alpha in alphas:
     alpha_histories.append(run_experiments(n_step_td_off_policy, env, behavior_policy, target_policy, n_mc_off_policy, sample_step,
-                               n_experiments, save_every, name="td_blackjack_{}".format(alpha), alpha=alpha, n=td_n))
+                               n_experiments, save_every, name="td({})_{}_{}".format(td_n, name, alpha), alpha=alpha, n=td_n))
 
 # Next we plot the results.
 
@@ -67,6 +67,12 @@ names = [
 
 ] + ["TD({}), alpha: {}".format(td_n, alpha) for alpha in alphas ]
 
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 22}
+
+plt.rc('xtick', labelsize=15)
+plt.rc('ytick', labelsize=15)
 for histories in list_of_histories:
     rmses = evaluate_experiment(histories, v_mc)
 
@@ -81,8 +87,11 @@ for histories in list_of_histories:
     plt.plot(run_lengths[0], mean)
     plt.fill_between(run_lengths[0], mean + std, mean - std, alpha=0.5)
 
-plt.title("Blackjack")
+plt.title("Blackjack", fontsize=20)
 plt.xlabel("Number of Episodes")
 plt.ylabel("RMSE")
 plt.legend(names)
+
+plt.rc('font', **font)
+
 plt.show()

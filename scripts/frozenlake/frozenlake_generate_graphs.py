@@ -3,25 +3,32 @@ from utils.misc import load_v_history, get_oldest_history
 import numpy as np
 import matplotlib.pyplot as plt
 n_experiments = 10
+name = "frozenlake_small"
 td_n = 4
 alpha = 0.01
-ord_histories_name = ["mc_ord_blackjack_run_{}".format(i) for i in range(n_experiments)]
-weighted_histories_names = ["mc_weighted_blackjack_run_{}".format(i) for i in range(n_experiments)]
-td_histories_names = ["td({})_blackjack_{}_run_{}".format(td_n, alpha, i) for i in range(n_experiments)]
-
+ord_histories_name = ["mc_ord_{}_run_{}".format(name, i) for i in range(n_experiments)]
+weighted_histories_names = ["mc_weighted_{}_run_{}".format(name, i) for i in range(n_experiments)]
+td_histories_names = ["td({})_{}_{}_run_{}".format(td_n, name, alpha, i) for i in range(n_experiments)]
 
 ord_histories = [load_v_history(name) for name in ord_histories_name]
 weighted_histories= [load_v_history(name) for name in weighted_histories_names]
 td_histories = [load_v_history(name) for name in td_histories_names]
 
-baseline_history = load_v_history('mc_blackjack')
 
+baseline_history = load_v_history('mc_{}'.format(name))
 
 baseline = get_oldest_history(baseline_history)
 
 
 
 list_of_histories = [ord_histories, weighted_histories, td_histories]
+
+font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : 22}
+
+plt.rc('xtick', labelsize=15)
+plt.rc('ytick', labelsize=15)
 
 for histories in list_of_histories:
     rmses = evaluate_experiment(histories, baseline)

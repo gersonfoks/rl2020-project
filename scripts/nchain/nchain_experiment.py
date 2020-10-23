@@ -1,5 +1,6 @@
 """
-This file contains the blackjack experiments.
+This file contains the nchain experiments.
+We use td(1) with alpha = 0.01
 """
 import gym
 from environments.Nchain import NChainEnv
@@ -12,31 +13,31 @@ import matplotlib.pyplot as plt
 
 # Default variables
 
-alphas = [0.1, 0.01, 0.001]
-
+alphas = [0.001]
+td_n = 1
 actions = [0, 1]
-n = 4
+n = 5
 env =  NChainEnv(n=n, slip=0.0)
 
 # Global settings
 
 
-epsilon = 0.01
+
 
 target_policy = create_epsilon_greedy_nchain_policy(n, 0.001)
-behavior_policy = create_epsilon_greedy_nchain_policy(n, 0.1)
+behavior_policy = RandomPolicy(actions)
 
-n_experiments = 1
+n_experiments = 10
 
-save_every = 1e2  ### How often we should save the results
+save_every = 1e3  ### How often we should save the results
 
 # Conf for mc
-n_mc_run = int(5e4)
+n_mc_run = int(3e5)
 save_every_mc = n_mc_run
 
 # Conf for the mc off policy
 
-n_mc_off_policy = int(5e4)
+n_mc_off_policy = int(3e5)
 
 ### Here we create the names
 name = "{}Chain".format(n)

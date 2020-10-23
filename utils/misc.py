@@ -2,6 +2,8 @@ from collections import defaultdict
 
 import numpy as np
 from ast import literal_eval
+import matplotlib.pyplot as plt
+from utils.experiments import evaluate_experiment
 
 
 def sample_episode(env, policy):
@@ -111,3 +113,21 @@ def get_oldest_history(histories):
     max_iter = np.max([key for key in histories.keys()])
 
     return histories[max_iter]
+
+
+
+def plot_rmse_histories(list_of_histories, baseline, names):
+    for histories in list_of_histories:
+        rmses = evaluate_experiment(histories, baseline)
+
+        run_lengths = [run_lenght for run_lenght, rmse in rmses]
+        rmses = [rmse for run_lenght, rmse in rmses]
+
+        mean = np.mean(rmses, axis=0)
+        std = np.std(rmses, axis=0)
+
+        plt.plot(run_lengths[0], mean)
+        plt.fill_between(run_lengths[0], mean + std, mean - std, alpha=0.5)
+
+    plt.legend(names)
+    plt.show()

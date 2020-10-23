@@ -38,17 +38,17 @@ epsilon = 0.01
 target_policy = create_epsilon_greey_frozenlake_policy(epsilon)
 behavior_policy = RandomPolicy(actions)
 
-n_experiments = 1
+n_experiments = 10
 
 save_every = 1e2  ### How often we should save the results
 
 # Conf for mc
-n_mc_run = int(1e4)
+n_mc_run = int(1e5)
 save_every_mc = n_mc_run
 
 # Conf for the mc off policy
 
-n_mc_off_policy = int(1e4)
+n_mc_off_policy = int(1e5)
 
 ### Here we create the names
 name = "frozenlake_small"
@@ -58,11 +58,11 @@ name = "frozenlake_small"
 v_mc, hist = mc_prediction(env, target_policy, n_mc_run, sample_episode, save_every=n_mc_run, name="mc_{}".format(name))
 
 histories_ord = run_experiments(mc_ordinary_importance_sampling, env, behavior_policy, target_policy, n_mc_off_policy,
-                                sample_episode, n_experiments, save_every, name="mc_ord_".format(name))
+                                sample_episode, n_experiments, save_every, name="mc_ord_{}".format(name))
 
 histories_weighted = run_experiments(mc_weighted_importance_sampling, env, behavior_policy, target_policy,
                                      n_mc_off_policy, sample_episode, n_experiments, save_every,
-                                     name="mc_weighted_".format(name))
+                                     name="mc_weighted_{}".format(name))
 
 
 alpha_histories = [
