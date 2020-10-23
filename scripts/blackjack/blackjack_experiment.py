@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 # Default variables
 
-alphas = [0.1, 0.01, 0.001]
+alphas = [0.01]
+td_n = 4
 
 actions = [0, 1]
 env = gym.make('Blackjack-v0')
@@ -22,17 +23,17 @@ env = gym.make('Blackjack-v0')
 target_policy = SimpleBlackjackPolicy()
 behavior_policy = RandomPolicy(actions)
 
-n_experiments = 2
+n_experiments = 10
 
-save_every = 1e4  ### How often we should save the results
+save_every = 1e3  ### How often we should save the results
 
 # Conf for mc
-n_mc_run = int(1e5)
+n_mc_run = int(5e5)
 save_every_mc = n_mc_run
 
 # Conf for the mc off policy
 
-n_mc_off_policy = int(1e5)
+n_mc_off_policy = int(5e5)
 
 # First we need to run mc.
 v_mc, hist = mc_prediction(env, SimpleBlackjackPolicy(), n_mc_run, sample_episode, save_every=n_mc_run, name="mc_blackjack")
@@ -50,7 +51,7 @@ alpha_histories = [
 ]
 for alpha in alphas:
     alpha_histories.append(run_experiments(n_step_td_off_policy, env, behavior_policy, target_policy, n_mc_off_policy, sample_step,
-                               n_experiments, save_every, name="td_blackjack_{}".format(alpha), alpha=alpha))
+                               n_experiments, save_every, name="td_blackjack_{}".format(alpha), alpha=alpha, n=td_n))
 
 # Next we plot the results.
 
@@ -59,6 +60,12 @@ list_of_histories = [
     histories_weighted,
 
 ] + alpha_histories
+
+names = [
+    "mc ordinary ",
+    "mc weighted",
+
+] + ["TD({}), alpha: {}".format(td_n, alpha) for alpha in alphas ]
 
 for histories in list_of_histories:
     rmses = evaluate_experiment(histories, v_mc)
@@ -74,4 +81,8 @@ for histories in list_of_histories:
     plt.plot(run_lengths[0], mean)
     plt.fill_between(run_lengths[0], mean + std, mean - std, alpha=0.5)
 
+plt.title("Blackjack")
+plt.xlabel("Number of Episodes")
+plt.ylabel("RMSE")
+plt.legend(names)
 plt.show()
